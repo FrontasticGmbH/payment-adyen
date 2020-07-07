@@ -39,7 +39,10 @@
         "squizlabs/php_codesniffer": "@stable",
         "sebastian/phpcpd": "@stable",
         "phake/phake": "^3.0",
-        "phpstan/phpstan": "^0.12.18"
+        "phpstan/phpstan": "^0.12.18",
+        "phpstan/extension-installer": "^1.0",
+        "phpstan/phpstan-symfony": "^0.12.6",
+        "phpstan/phpstan-beberlei-assert": "^0.12.2"
     },
     "autoload": {
         "psr-4": {
