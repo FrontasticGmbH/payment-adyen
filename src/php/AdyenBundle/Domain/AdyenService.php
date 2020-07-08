@@ -6,11 +6,15 @@ use Adyen\Client;
 use Adyen\Service\Checkout;
 use Frontastic\Common\CartApiBundle\Domain\Cart;
 use Frontastic\Common\ProductApiBundle\Domain\ProductApi\Locale;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AdyenService
 {
     /** @var Client */
     private $adyenClient;
+
+    /** @var UrlGeneratorInterface */
+    private $router;
 
     /** @var array<string, string> */
     private $originKeys;
@@ -18,9 +22,10 @@ class AdyenService
     /**
      * @param array<string, string> $originKeys
      */
-    public function __construct(Client $adyenClient, array $originKeys)
+    public function __construct(Client $adyenClient, UrlGeneratorInterface $router, array $originKeys)
     {
         $this->adyenClient = $adyenClient;
+        $this->router = $router;
         $this->originKeys = $originKeys;
     }
 
@@ -66,9 +71,23 @@ class AdyenService
             'amount' => $this->buildCartAmount($cart),
             'reference' => $cart->cartId,
             'paymentMethod' => $paymentMethod,
+            'returnUrl' => $origin . $this->router->generate('Frontastic.Adyen.paymentReturn'),
         ]);
 
         return new AdyenMakePaymentResult($result, true);
+    }
+
+    /**
+     * @param array<mixed> $details
+     * @return array<mixed>
+     */
+    public function submitPaymentDetails(array $details, string $paymentData): array
+    {
+        $checkoutService = $this->buildCheckoutService();
+        return $checkoutService->paymentsDetails([
+            'details' => $details,
+            'paymentData' => $paymentData,
+        ]);
     }
 
     private function buildCheckoutService(): Checkout

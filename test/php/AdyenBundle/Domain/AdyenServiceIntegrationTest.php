@@ -6,6 +6,7 @@ use Frontastic\Common\CartApiBundle\Domain\Cart;
 use Frontastic\Common\ProductApiBundle\Domain\ProductApi\Locale;
 use Frontastic\Common\ReplicatorBundle\Domain\Project;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AdyenServiceIntegrationTest extends TestCase
 {
@@ -17,7 +18,8 @@ class AdyenServiceIntegrationTest extends TestCase
      */
     public function setupService()
     {
-        $serviceFactory = new AdyenServiceFactory();
+        $router = $this->getMockBuilder(UrlGeneratorInterface::class)->getMock();
+        $serviceFactory = new AdyenServiceFactory($router);
         $project = new Project([
             'configuration' => [
                 'payment' => [

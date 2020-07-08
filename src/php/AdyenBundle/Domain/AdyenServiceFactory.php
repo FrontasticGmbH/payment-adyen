@@ -5,9 +5,18 @@ namespace Frontastic\Payment\AdyenBundle\Domain;
 use Adyen\Client;
 use Adyen\Environment;
 use Frontastic\Common\ReplicatorBundle\Domain\Project;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AdyenServiceFactory
 {
+    /** @var UrlGeneratorInterface */
+    private $router;
+
+    public function __construct(UrlGeneratorInterface $router)
+    {
+        $this->router = $router;
+    }
+
     public function factorForProject(Project $project): AdyenService
     {
         /** @var \stdClass $adyenConfig */
@@ -18,7 +27,7 @@ class AdyenServiceFactory
         $client->setMerchantAccount(self::getStringOption($adyenConfig, 'merchantAccount'));
         $client->setEnvironment(Environment::TEST);
 
-        return new AdyenService($client, self::getStringMapOption($adyenConfig, 'originKeys'));
+        return new AdyenService($client, $this->router, self::getStringMapOption($adyenConfig, 'originKeys'));
     }
 
     private static function getStringOption(\stdClass $config, string $option): string

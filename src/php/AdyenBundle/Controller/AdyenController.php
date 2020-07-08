@@ -8,6 +8,7 @@ use Frontastic\Common\ProductApiBundle\Domain\ProductApi\Locale;
 use Frontastic\Payment\AdyenBundle\Domain\AdyenMakePaymentResult;
 use Frontastic\Payment\AdyenBundle\Domain\AdyenPaymentMethodsResult;
 use Frontastic\Payment\AdyenBundle\Domain\AdyenService;
+use QafooLabs\MVC\RedirectRouteResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -39,6 +40,16 @@ class AdyenController extends CartController
             $this->getCart($context, $request),
             $body['paymentMethod'],
             $request->getSchemeAndHttpHost()
+        );
+    }
+
+    public function paymentReturnAction(Context $context, Request $request): RedirectRouteResponse
+    {
+        return new RedirectRouteResponse(
+            'Frontastic.Frontend.Master.Checkout.checkout',
+            [
+                'adyen' => 'redirect',
+            ]
         );
     }
 }
