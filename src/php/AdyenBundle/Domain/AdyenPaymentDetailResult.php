@@ -15,6 +15,9 @@ class AdyenPaymentDetailResult extends DataObject
     /** @var string|null */
     public $pspReference;
 
+    /** @var string|null */
+    public $refusalReason;
+
     /* We want to pass additional properties to the Frontend */
     public function __set($name, $value): void
     {
