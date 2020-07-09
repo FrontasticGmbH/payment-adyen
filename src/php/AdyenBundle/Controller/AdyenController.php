@@ -36,15 +36,41 @@ class AdyenController extends CartController
             throw new BadRequestHttpException('Missing object paymentMethod in JSON body');
         }
 
-        return $adyenService->makePayment(
+        $paymentResult = $adyenService->makePayment(
             $this->getCart($context, $request),
             $body['paymentMethod'],
             $request->getSchemeAndHttpHost()
         );
+
+        if ($paymentResult->action !== null && $paymentResult->action->isRedirect() && $request->hasSession()) {
+            $session = $request->getSession();
+            $session->set('adyen_payment_data', $paymentResult->action->paymentData);
+            $session->set('adyen_detail_keys', $paymentResult->getDetailKeys());
+        }
+
+        return $paymentResult;
     }
 
     public function paymentReturnAction(Context $context, Request $request): RedirectRouteResponse
     {
+        /** @var AdyenService $adyenService */
+        $adyenService = $this->get(AdyenService::class);
+
+        if (!$request->hasSession()) {
+            throw new \RuntimeException('Adyen payment return needs a session');
+        }
+
+        $session = $request->getSession();
+        $paymentData = $session->get('adyen_payment_data');
+        $detailKeys = $session->get('adyen_detail_keys');
+
+        $details = [];
+        foreach ($detailKeys as $detailKey) {
+            $details[$detailKey] = $request->get($detailKey);
+        }
+
+        $result = $adyenService->submitPaymentDetails($details, $paymentData);
+
         return new RedirectRouteResponse(
             'Frontastic.Frontend.Master.Checkout.checkout',
             [

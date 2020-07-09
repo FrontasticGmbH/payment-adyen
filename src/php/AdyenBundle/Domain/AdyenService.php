@@ -74,20 +74,41 @@ class AdyenService
             'returnUrl' => $origin . $this->router->generate('Frontastic.Adyen.paymentReturn'),
         ]);
 
-        return new AdyenMakePaymentResult($result, true);
+        if (array_key_exists('action', $result)) {
+            $action = new AdyenAction($result['action']);
+
+            if ($action->isRedirect() && $action->paymentData === null) {
+                throw new \RuntimeException('Action type redirect needs paymentData');
+            }
+
+            $result['action'] = $action;
+        }
+
+        if (array_key_exists('details', $result)) {
+            $details = array_map(
+                function (array $paymentDetail): AdyenPaymentDetail {
+                    return new AdyenPaymentDetail($paymentDetail);
+                },
+                $result['details']
+            );
+            $result['details'] = $details;
+        }
+
+        return new AdyenMakePaymentResult($result);
     }
 
     /**
      * @param array<mixed> $details
-     * @return array<mixed>
      */
-    public function submitPaymentDetails(array $details, string $paymentData): array
+    public function submitPaymentDetails(array $details, string $paymentData): AdyenPaymentDetailResult
     {
         $checkoutService = $this->buildCheckoutService();
-        return $checkoutService->paymentsDetails([
+        $result = $checkoutService->paymentsDetails([
             'details' => $details,
             'paymentData' => $paymentData,
         ]);
+
+        return new AdyenPaymentDetailResult($result);
     }
 
     private function buildCheckoutService(): Checkout
