@@ -128,7 +128,7 @@ class AdyenService
     {
         return [
             'currency' => $cart->currency,
-            'value' => $cart->sum + 1999,
+            'value' => $cart->sum,
         ];
     }
 
