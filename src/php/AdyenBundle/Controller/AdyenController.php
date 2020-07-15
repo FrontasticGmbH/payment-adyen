@@ -22,7 +22,7 @@ class AdyenController extends CartController
         return $adyenService->fetchPaymentMethodsForCart(
             $this->getCart($context, $request),
             Locale::createFromPosix($context->locale),
-            $request->getSchemeAndHttpHost()
+            $this->getOriginForRequest($request)
         );
     }
 
@@ -39,7 +39,7 @@ class AdyenController extends CartController
         $paymentResult = $adyenService->makePayment(
             $this->getCart($context, $request),
             $body['paymentMethod'],
-            $request->getSchemeAndHttpHost()
+            $this->getOriginForRequest($request)
         );
 
         if ($paymentResult->action !== null && $paymentResult->action->isRedirect() && $request->hasSession()) {
@@ -77,5 +77,10 @@ class AdyenController extends CartController
                 'adyen' => 'redirect',
             ]
         );
+    }
+
+    private function getOriginForRequest(Request $request): string
+    {
+        return $request->query->get('origin', $request->getSchemeAndHttpHost());
     }
 }
