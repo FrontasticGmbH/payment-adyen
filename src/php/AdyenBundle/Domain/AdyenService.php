@@ -222,7 +222,7 @@ class AdyenService
             unset($payment->paymentDetails['adyenAction']);
         }
 
-        if ($paymentResult->hasRedirectAction()) {
+        if ($paymentResult->action !== null && $paymentResult->action->isRedirect()) {
             $payment->paymentDetails['adyenPaymentData'] = $paymentResult->action->paymentData;
             $payment->paymentDetails['adyenDetailKeys'] = $paymentResult->getDetailKeys();
         } else {

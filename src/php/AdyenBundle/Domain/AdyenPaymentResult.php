@@ -37,11 +37,6 @@ class AdyenPaymentResult extends DataObject
         );
     }
 
-    public function hasRedirectAction(): bool
-    {
-        return $this->action !== null && $this->action->isRedirect();
-    }
-
     /* We want to pass additional properties to the Frontend */
     public function __set($name, $value): void
     {

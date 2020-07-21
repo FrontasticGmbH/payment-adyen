@@ -54,7 +54,7 @@ class AdyenController extends CartController
         /** @var AdyenService $adyenService */
         $adyenService = $this->get(AdyenService::class);
 
-        /** @var CartApi $cart */
+        /** @var CartApi $cartApi */
         $cartApi = $this->get('frontastic.catwalk.cart_api');
 
         $cart = $cartApi->getById($cartId, $context->locale);
