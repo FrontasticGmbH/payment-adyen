@@ -5,7 +5,10 @@ namespace Frontastic\Payment\AdyenBundle\Domain;
 use Adyen\Client;
 use Adyen\Service\Checkout;
 use Frontastic\Common\CartApiBundle\Domain\Cart;
+use Frontastic\Common\CartApiBundle\Domain\CartApi;
+use Frontastic\Common\CartApiBundle\Domain\Payment;
 use Frontastic\Common\ProductApiBundle\Domain\ProductApi\Locale;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AdyenService
@@ -16,16 +19,20 @@ class AdyenService
     /** @var UrlGeneratorInterface */
     private $router;
 
+    /** @var CartApi */
+    private $cartApi;
+
     /** @var array<string, string> */
     private $originKeys;
 
     /**
      * @param array<string, string> $originKeys
      */
-    public function __construct(Client $adyenClient, UrlGeneratorInterface $router, array $originKeys)
+    public function __construct(Client $adyenClient, UrlGeneratorInterface $router, CartApi $cartApi, array $originKeys)
     {
         $this->adyenClient = $adyenClient;
         $this->router = $router;
+        $this->cartApi = $cartApi;
         $this->originKeys = $originKeys;
     }
 
@@ -64,14 +71,37 @@ class AdyenService
     /**
      * @param array<mixed> $paymentMethod
      */
-    public function makePayment(Cart $cart, array $paymentMethod, string $origin): AdyenMakePaymentResult
-    {
+    public function makePayment(
+        Cart $cart,
+        array $paymentMethod,
+        Locale $locale,
+        string $origin
+    ): AdyenPaymentResult {
+        $paymentId = Uuid::uuid4()->toString();
+
+        $payment = new Payment([
+            'id' => $paymentId,
+            'paymentProvider' => 'adyen',
+            'amount' => $cart->sum,
+            'currency' => $cart->currency,
+            'paymentStatus' => Payment::PAYMENT_STATUS_INIT,
+        ]);
+        $this->cartApi->startTransaction($cart);
+        $this->cartApi->addPayment($cart, $payment, null, $locale->toString());
+        $cart = $this->cartApi->commit($locale->toString());
+
         $checkoutService = $this->buildCheckoutService();
         $result = $checkoutService->payments([
             'amount' => $this->buildCartAmount($cart),
             'reference' => $cart->cartId,
             'paymentMethod' => $paymentMethod,
-            'returnUrl' => $origin . $this->router->generate('Frontastic.Adyen.paymentReturn'),
+            'returnUrl' => $origin . $this->router->generate(
+                    'Frontastic.Adyen.paymentReturn',
+                    [
+                        'cartId' => $cart->cartId,
+                        'paymentId' => $paymentId,
+                    ]
+                ),
         ]);
 
         if (array_key_exists('action', $result)) {
@@ -94,21 +124,34 @@ class AdyenService
             $result['details'] = $details;
         }
 
-        return new AdyenMakePaymentResult($result);
+        $paymentResult = new AdyenPaymentResult($result);
+
+        $this->updatePaymentWithResult($paymentResult, $cart, $paymentId, $locale);
+
+        return $paymentResult;
     }
 
     /**
      * @param array<mixed> $details
      */
-    public function submitPaymentDetails(array $details, string $paymentData): AdyenPaymentDetailResult
-    {
+    public function submitPaymentDetails(
+        Cart $cart,
+        string $paymentId,
+        array $details,
+        string $paymentData,
+        Locale $locale
+    ): AdyenPaymentResult {
         $checkoutService = $this->buildCheckoutService();
         $result = $checkoutService->paymentsDetails([
             'details' => $details,
             'paymentData' => $paymentData,
         ]);
 
-        return new AdyenPaymentDetailResult($result);
+        $paymentResult = new AdyenPaymentResult($result);
+
+        $this->updatePaymentWithResult($paymentResult, $cart, $paymentId, $locale);
+
+        return $paymentResult;
     }
 
     private function buildCheckoutService(): Checkout
@@ -139,5 +182,53 @@ class AdyenService
         }
         $originKey = $this->originKeys[$origin];
         return $originKey;
+    }
+
+    private function updatePaymentWithResult(
+        AdyenPaymentResult $paymentResult,
+        Cart $cart,
+        string $paymentId,
+        Locale $locale
+    ): void {
+        $payment = $cart->getPaymentById($paymentId);
+
+        switch ($paymentResult->resultCode) {
+            case 'Authorised':
+                $payment->paymentStatus = Payment::PAYMENT_STATUS_PAID;
+                break;
+            case 'Error':
+            case 'Refused':
+                $payment->paymentStatus = Payment::PAYMENT_STATUS_FAILED;
+                break;
+            default:
+                $payment->paymentStatus = Payment::PAYMENT_STATUS_PENDING;
+                break;
+        }
+
+        if ($paymentResult->pspReference !== null) {
+            $payment->paymentId = $paymentResult->pspReference;
+        }
+
+        if ($payment->paymentDetails === null) {
+            $payment->paymentDetails = [];
+        }
+
+        $payment->paymentDetails['adyenResultCode'] = $paymentResult->resultCode;
+
+        if ($paymentResult->action !== null) {
+            $payment->paymentDetails['adyenAction'] = $paymentResult->action;
+        } else {
+            unset($payment->paymentDetails['adyenAction']);
+        }
+
+        if ($paymentResult->hasRedirectAction()) {
+            $payment->paymentDetails['adyenPaymentData'] = $paymentResult->action->paymentData;
+            $payment->paymentDetails['adyenDetailKeys'] = $paymentResult->getDetailKeys();
+        } else {
+            unset($payment->paymentDetails['adyenPaymentData']);
+            unset($payment->paymentDetails['adyenDetailKeys']);
+        }
+
+        $this->cartApi->updatePayment($cart, $payment, $locale->toString());
     }
 }

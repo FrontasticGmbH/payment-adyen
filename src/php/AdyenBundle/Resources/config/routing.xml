@@ -16,7 +16,7 @@
         </default>
     </route>
 
-    <route id="Frontastic.Adyen.paymentReturn" path="/paymentReturn" methods="GET,POST">
+    <route id="Frontastic.Adyen.paymentReturn" path="/paymentReturn/{cartId}/{paymentId}" methods="GET,POST">
         <default key="_controller">
             Frontastic\Payment\AdyenBundle\Controller\AdyenController::paymentReturnAction
         </default>

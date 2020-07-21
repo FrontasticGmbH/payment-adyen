@@ -4,9 +4,10 @@ namespace Frontastic\Payment\AdyenBundle\Controller;
 
 use Frontastic\Catwalk\ApiCoreBundle\Domain\Context;
 use Frontastic\Common\CartApiBundle\Controller\CartController;
+use Frontastic\Common\CartApiBundle\Domain\CartApi;
 use Frontastic\Common\ProductApiBundle\Domain\ProductApi\Locale;
-use Frontastic\Payment\AdyenBundle\Domain\AdyenMakePaymentResult;
 use Frontastic\Payment\AdyenBundle\Domain\AdyenPaymentMethodsResult;
+use Frontastic\Payment\AdyenBundle\Domain\AdyenPaymentResult;
 use Frontastic\Payment\AdyenBundle\Domain\AdyenService;
 use QafooLabs\MVC\RedirectRouteResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,12 +22,12 @@ class AdyenController extends CartController
 
         return $adyenService->fetchPaymentMethodsForCart(
             $this->getCart($context, $request),
-            Locale::createFromPosix($context->locale),
+            $this->getLocaleForContext($context),
             $this->getOriginForRequest($request)
         );
     }
 
-    public function makePaymentAction(Context $context, Request $request): AdyenMakePaymentResult
+    public function makePaymentAction(Context $context, Request $request): AdyenPaymentResult
     {
         /** @var AdyenService $adyenService */
         $adyenService = $this->get(AdyenService::class);
@@ -36,45 +37,54 @@ class AdyenController extends CartController
             throw new BadRequestHttpException('Missing object paymentMethod in JSON body');
         }
 
-        $paymentResult = $adyenService->makePayment(
+        return $adyenService->makePayment(
             $this->getCart($context, $request),
             $body['paymentMethod'],
+            $this->getLocaleForContext($context),
             $this->getOriginForRequest($request)
         );
-
-        if ($paymentResult->action !== null && $paymentResult->action->isRedirect() && $request->hasSession()) {
-            $session = $request->getSession();
-            $session->set('adyen_payment_data', $paymentResult->action->paymentData);
-            $session->set('adyen_detail_keys', $paymentResult->getDetailKeys());
-        }
-
-        return $paymentResult;
     }
 
-    public function paymentReturnAction(Context $context, Request $request): RedirectRouteResponse
-    {
+    public function paymentReturnAction(
+        Context $context,
+        Request $request,
+        string $cartId,
+        string $paymentId
+    ): RedirectRouteResponse {
         /** @var AdyenService $adyenService */
         $adyenService = $this->get(AdyenService::class);
 
-        if (!$request->hasSession()) {
-            throw new \RuntimeException('Adyen payment return needs a session');
-        }
+        /** @var CartApi $cart */
+        $cartApi = $this->get('frontastic.catwalk.cart_api');
 
-        $session = $request->getSession();
-        $paymentData = $session->get('adyen_payment_data');
-        $detailKeys = $session->get('adyen_detail_keys');
+        $cart = $cartApi->getById($cartId, $context->locale);
+        $payment = $cart->getPaymentById($paymentId);
+
+        $paymentData = $payment->paymentDetails['adyenPaymentData'] ?? null;
+        $detailKeys = $payment->paymentDetails['adyenDetailKeys'] ?? null;
+
+        if ($paymentData === null || $detailKeys === null) {
+            throw new \RuntimeException('Payment has no payment data or no detail keys');
+        }
 
         $details = [];
         foreach ($detailKeys as $detailKey) {
             $details[$detailKey] = $request->get($detailKey);
         }
 
-        $result = $adyenService->submitPaymentDetails($details, $paymentData);
+        $result = $adyenService->submitPaymentDetails(
+            $cart,
+            $paymentId,
+            $details,
+            $paymentData,
+            $this->getLocaleForContext($context)
+        );
 
         return new RedirectRouteResponse(
             'Frontastic.Frontend.Master.Checkout.checkout',
             [
-                'adyen' => 'redirect',
+                'adyenStatus' => 'redirect',
+                'paymentId' => $paymentId,
             ]
         );
     }
@@ -82,5 +92,10 @@ class AdyenController extends CartController
     private function getOriginForRequest(Request $request): string
     {
         return $request->query->get('origin', $request->getSchemeAndHttpHost());
+    }
+
+    private function getLocaleForContext(Context $context): Locale
+    {
+        return Locale::createFromPosix($context->locale);
     }
 }

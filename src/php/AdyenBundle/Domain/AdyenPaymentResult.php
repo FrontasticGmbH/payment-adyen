@@ -4,11 +4,8 @@ namespace Frontastic\Payment\AdyenBundle\Domain;
 
 use Kore\DataObject\DataObject;
 
-class AdyenMakePaymentResult extends DataObject
+class AdyenPaymentResult extends DataObject
 {
-    /** @var AdyenAction|null */
-    public $action;
-
     /** @var string|null */
     public $resultCode;
 
@@ -21,14 +18,11 @@ class AdyenMakePaymentResult extends DataObject
     /** @var string|null */
     public $refusalReason;
 
+    /** @var AdyenAction|null */
+    public $action;
+
     /** @var AdyenPaymentDetail[] */
     public $details = [];
-
-    /* We want to pass additional properties to the Frontend */
-    public function __set($name, $value): void
-    {
-        $this->$name = $value;
-    }
 
     /**
      * @return string[]
@@ -41,5 +35,16 @@ class AdyenMakePaymentResult extends DataObject
             },
             $this->details
         );
+    }
+
+    public function hasRedirectAction(): bool
+    {
+        return $this->action !== null && $this->action->isRedirect();
+    }
+
+    /* We want to pass additional properties to the Frontend */
+    public function __set($name, $value): void
+    {
+        $this->$name = $value;
     }
 }

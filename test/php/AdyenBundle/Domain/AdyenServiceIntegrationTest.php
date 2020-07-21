@@ -3,6 +3,7 @@
 namespace Frontastic\Payment\AdyenBundle\Domain;
 
 use Frontastic\Common\CartApiBundle\Domain\Cart;
+use Frontastic\Common\CartApiBundle\Domain\CartApi;
 use Frontastic\Common\ProductApiBundle\Domain\ProductApi\Locale;
 use Frontastic\Common\ReplicatorBundle\Domain\Project;
 use PHPUnit\Framework\TestCase;
@@ -19,7 +20,8 @@ class AdyenServiceIntegrationTest extends TestCase
     public function setupService()
     {
         $router = $this->getMockBuilder(UrlGeneratorInterface::class)->getMock();
-        $serviceFactory = new AdyenServiceFactory($router);
+        $cartApi = $this->getMockBuilder(CartApi::class)->getMock();
+        $serviceFactory = new AdyenServiceFactory($router, $cartApi);
         $project = new Project([
             'configuration' => [
                 'payment' => [
