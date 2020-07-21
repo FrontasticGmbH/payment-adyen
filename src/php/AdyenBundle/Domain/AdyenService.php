@@ -95,7 +95,8 @@ class AdyenService
             'amount' => $this->buildCartAmount($cart),
             'reference' => $cart->cartId,
             'paymentMethod' => $paymentMethod,
-            'returnUrl' => $origin . $this->router->generate(
+            'returnUrl' =>
+                $origin . $this->router->generate(
                     'Frontastic.Adyen.paymentReturn',
                     [
                         'cartId' => $cart->cartId,

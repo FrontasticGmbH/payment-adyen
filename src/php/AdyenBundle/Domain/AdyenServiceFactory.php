@@ -32,7 +32,12 @@ class AdyenServiceFactory
         $client->setMerchantAccount(self::getStringOption($adyenConfig, 'merchantAccount'));
         $client->setEnvironment(Environment::TEST);
 
-        return new AdyenService($client, $this->router, $this->cartApi, self::getStringMapOption($adyenConfig, 'originKeys'));
+        return new AdyenService(
+            $client,
+            $this->router,
+            $this->cartApi,
+            self::getStringMapOption($adyenConfig, 'originKeys')
+        );
     }
 
     private static function getStringOption(\stdClass $config, string $option): string
