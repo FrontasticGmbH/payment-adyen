@@ -98,6 +98,11 @@ class AdyenService
             'reference' => $cart->cartId,
             'paymentMethod' => $paymentMethod,
             'browserInfo' => $browserInfo,
+            'additionalData' => [
+                'allow3DS2' => true,
+            ],
+            'channel' => 'Web',
+            'origin' => $origin,
             'returnUrl' =>
                 $origin . $this->router->generate(
                     'Frontastic.Adyen.paymentReturn',
