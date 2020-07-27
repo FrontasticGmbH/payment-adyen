@@ -6,6 +6,9 @@ use Kore\DataObject\DataObject;
 
 class AdyenPaymentResult extends DataObject
 {
+    /** @var string */
+    public $paymentId;
+
     /** @var string|null */
     public $resultCode;
 

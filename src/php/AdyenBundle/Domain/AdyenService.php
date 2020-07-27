@@ -71,6 +71,7 @@ class AdyenService
 
     /**
      * @param array<mixed> $paymentMethod
+     * @param array<mixed> $browserInfo
      */
     public function makePayment(
         Cart $cart,
@@ -117,29 +118,7 @@ class AdyenService
             $paymentParameters['shopperIp'] = $clientIp;
         }
         $result = $checkoutService->payments($paymentParameters);
-
-        if (array_key_exists('action', $result)) {
-            $action = new AdyenAction($result['action']);
-
-            if ($action->isRedirect() && $action->paymentData === null) {
-                throw new \RuntimeException('Action type redirect needs paymentData');
-            }
-
-            $result['action'] = $action;
-        }
-
-        if (array_key_exists('details', $result)) {
-            $details = array_map(
-                function (array $paymentDetail): AdyenPaymentDetail {
-                    return new AdyenPaymentDetail($paymentDetail);
-                },
-                $result['details']
-            );
-            $result['details'] = $details;
-        }
-
-        $paymentResult = new AdyenPaymentResult($result);
-
+        $paymentResult = $this->buildPaymentResult($result, $paymentId);
         $this->updatePaymentWithResult($paymentResult, $cart, $paymentId, $locale);
 
         return $paymentResult;
@@ -160,9 +139,7 @@ class AdyenService
             'details' => $details,
             'paymentData' => $paymentData,
         ]);
-
-        $paymentResult = new AdyenPaymentResult($result);
-
+        $paymentResult = $this->buildPaymentResult($result, $paymentId);
         $this->updatePaymentWithResult($paymentResult, $cart, $paymentId, $locale);
 
         return $paymentResult;
@@ -244,5 +221,36 @@ class AdyenService
         }
 
         $this->cartApi->updatePayment($cart, $payment, $locale->toString());
+    }
+
+    /**
+     * @param array<mixed> $result
+     */
+    private function buildPaymentResult(array $result, string $paymentId): AdyenPaymentResult
+    {
+        if (array_key_exists('action', $result)) {
+            $action = new AdyenAction($result['action']);
+
+            if ($action->isRedirect() && $action->paymentData === null) {
+                throw new \RuntimeException('Action type redirect needs paymentData');
+            }
+
+            $result['action'] = $action;
+        }
+
+        if (array_key_exists('details', $result)) {
+            $details = array_map(
+                function (array $paymentDetail): AdyenPaymentDetail {
+                    return new AdyenPaymentDetail($paymentDetail);
+                },
+                $result['details']
+            );
+            $result['details'] = $details;
+        }
+
+        $result['paymentId'] = $paymentId;
+
+        $paymentResult = new AdyenPaymentResult($result);
+        return $paymentResult;
     }
 }

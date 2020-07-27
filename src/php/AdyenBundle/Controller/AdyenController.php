@@ -50,6 +50,30 @@ class AdyenController extends CartController
         ));
     }
 
+    public function addidionalPaymentDetailsAction(Context $context, Request $request, string $paymentId): JsonResponse
+    {
+        /** @var AdyenService $adyenService */
+        $adyenService = $this->get(AdyenService::class);
+
+        $body = $this->getJsonContent($request);
+        if (!is_array($body['details'] ?? null)) {
+            throw new BadRequestHttpException('Missing object details in JSON body');
+        }
+        if (!is_string($body['paymentData'] ?? null)) {
+            throw new BadRequestHttpException('Missing string paymentData in JSON body');
+        }
+
+        $cart = $this->getCart($context, $request);
+
+        return $this->json($adyenService->submitPaymentDetails(
+            $cart,
+            $paymentId,
+            $body['details'],
+            $body['paymentData'],
+            $this->getLocaleForContext($context)
+        ));
+    }
+
     public function paymentReturnAction(
         Context $context,
         Request $request,
