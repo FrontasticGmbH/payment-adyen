@@ -72,7 +72,7 @@ class AdyenController extends CartController
             $details[$detailKey] = $request->get($detailKey);
         }
 
-        $result = $adyenService->submitPaymentDetails(
+        $adyenService->submitPaymentDetails(
             $cart,
             $paymentId,
             $details,
@@ -83,8 +83,7 @@ class AdyenController extends CartController
         return new RedirectRouteResponse(
             'Frontastic.Frontend.Master.Checkout.checkout',
             [
-                'adyenStatus' => 'redirect',
-                'paymentId' => $paymentId,
+                'adyenPaymentId' => $paymentId,
             ]
         );
     }
