@@ -41,6 +41,7 @@ class AdyenService
         $checkoutService = $this->buildCheckoutService();
         $adyenLocale = $this->buildAdyenLocale($locale);
         $result = $checkoutService->paymentMethods([
+            // @FIXME remove hardcoded country
             'countryCode' => /*$locale->territory*/ 'DE',
             'shopperLocale' => $adyenLocale,
             'amount' => $this->buildCartAmount($cart),
