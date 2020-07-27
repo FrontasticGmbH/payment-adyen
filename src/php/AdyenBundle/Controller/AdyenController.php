@@ -36,10 +36,14 @@ class AdyenController extends CartController
         if (!is_array($body['paymentMethod'] ?? null)) {
             throw new BadRequestHttpException('Missing object paymentMethod in JSON body');
         }
+        if (!is_array($body['browserInfo'] ?? null)) {
+            throw new BadRequestHttpException('Missing object browserInfo in JSON body');
+        }
 
         return $adyenService->makePayment(
             $this->getCart($context, $request),
             $body['paymentMethod'],
+            $body['browserInfo'],
             $this->getLocaleForContext($context),
             $this->getOriginForRequest($request)
         );

@@ -74,6 +74,7 @@ class AdyenService
     public function makePayment(
         Cart $cart,
         array $paymentMethod,
+        array $browserInfo,
         Locale $locale,
         string $origin
     ): AdyenPaymentResult {
@@ -95,6 +96,7 @@ class AdyenService
             'amount' => $this->buildCartAmount($cart),
             'reference' => $cart->cartId,
             'paymentMethod' => $paymentMethod,
+            'browserInfo' => $browserInfo,
             'returnUrl' =>
                 $origin . $this->router->generate(
                     'Frontastic.Adyen.paymentReturn',
