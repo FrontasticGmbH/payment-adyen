@@ -7,9 +7,9 @@ use Frontastic\Common\CartApiBundle\Controller\CartController;
 use Frontastic\Common\CartApiBundle\Domain\CartApi;
 use Frontastic\Common\ProductApiBundle\Domain\ProductApi\Locale;
 use Frontastic\Payment\AdyenBundle\Domain\AdyenPaymentMethodsResult;
-use Frontastic\Payment\AdyenBundle\Domain\AdyenPaymentResult;
 use Frontastic\Payment\AdyenBundle\Domain\AdyenService;
 use QafooLabs\MVC\RedirectRouteResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -27,7 +27,7 @@ class AdyenController extends CartController
         );
     }
 
-    public function makePaymentAction(Context $context, Request $request): AdyenPaymentResult
+    public function makePaymentAction(Context $context, Request $request): JsonResponse
     {
         /** @var AdyenService $adyenService */
         $adyenService = $this->get(AdyenService::class);
@@ -40,14 +40,14 @@ class AdyenController extends CartController
             throw new BadRequestHttpException('Missing object browserInfo in JSON body');
         }
 
-        return $adyenService->makePayment(
+        return $this->json($adyenService->makePayment(
             $this->getCart($context, $request),
             $body['paymentMethod'],
             $body['browserInfo'],
             $this->getLocaleForContext($context),
             $this->getOriginForRequest($request),
             $request->getClientIp()
-        );
+        ));
     }
 
     public function paymentReturnAction(
