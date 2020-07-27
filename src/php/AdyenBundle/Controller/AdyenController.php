@@ -45,7 +45,8 @@ class AdyenController extends CartController
             $body['paymentMethod'],
             $body['browserInfo'],
             $this->getLocaleForContext($context),
-            $this->getOriginForRequest($request)
+            $this->getOriginForRequest($request),
+            $request->getClientIp()
         );
     }
 

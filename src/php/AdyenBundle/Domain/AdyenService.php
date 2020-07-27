@@ -76,7 +76,8 @@ class AdyenService
         array $paymentMethod,
         array $browserInfo,
         Locale $locale,
-        string $origin
+        string $origin,
+        ?string $clientIp
     ): AdyenPaymentResult {
         $paymentId = Uuid::uuid4()->toString();
 
@@ -92,7 +93,7 @@ class AdyenService
         $cart = $this->cartApi->commit($locale->toString());
 
         $checkoutService = $this->buildCheckoutService();
-        $result = $checkoutService->payments([
+        $paymentParameters = [
             'amount' => $this->buildCartAmount($cart),
             'reference' => $cart->cartId,
             'paymentMethod' => $paymentMethod,
@@ -105,7 +106,11 @@ class AdyenService
                         'paymentId' => $paymentId,
                     ]
                 ),
-        ]);
+        ];
+        if ($clientIp !== null) {
+            $paymentParameters['shopperIp'] = $clientIp;
+        }
+        $result = $checkoutService->payments($paymentParameters);
 
         if (array_key_exists('action', $result)) {
             $action = new AdyenAction($result['action']);
