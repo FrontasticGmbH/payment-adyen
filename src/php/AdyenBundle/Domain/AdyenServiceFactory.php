@@ -36,6 +36,7 @@ class AdyenServiceFactory
             $client,
             $this->router,
             $this->cartApi,
+            self::getStringOption($adyenConfig, 'clientKey'),
             self::getStringMapOption($adyenConfig, 'originKeys')
         );
     }

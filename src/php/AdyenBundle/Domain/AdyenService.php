@@ -22,17 +22,26 @@ class AdyenService
     /** @var CartApi */
     private $cartApi;
 
+    /** @var string */
+    private $clientKey;
+
     /** @var array<string, string> */
     private $originKeys;
 
     /**
      * @param array<string, string> $originKeys
      */
-    public function __construct(Client $adyenClient, UrlGeneratorInterface $router, CartApi $cartApi, array $originKeys)
-    {
+    public function __construct(
+        Client $adyenClient,
+        UrlGeneratorInterface $router,
+        CartApi $cartApi,
+        string $clientKey,
+        array $originKeys
+    ) {
         $this->adyenClient = $adyenClient;
         $this->router = $router;
         $this->cartApi = $cartApi;
+        $this->clientKey = $clientKey;
         $this->originKeys = $originKeys;
     }
 
@@ -65,6 +74,7 @@ class AdyenService
                 'originKey' => $this->getOriginKey($origin),
                 'locale' => $adyenLocale,
                 'environment' => 'test',
+                'clientKey' => $this->clientKey,
             ],
         ]);
     }
@@ -248,9 +258,8 @@ class AdyenService
             $result['details'] = $details;
         }
 
-        $result['paymentId'] = $paymentId;
-
         $paymentResult = new AdyenPaymentResult($result);
+        $paymentResult->paymentId = $paymentId;
         return $paymentResult;
     }
 }

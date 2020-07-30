@@ -28,6 +28,7 @@ class AdyenServiceIntegrationTest extends TestCase
                     'adyen' => [
                         'apiKey' => 'AQEphmfuXNWTK0Qc+iSWgGs2s+WIXIJOKp5IcJtsjzAUli2Gh6PoLfl2xhUQwV1bDb7kfNy1WIxIIkxgBw==-gkoNSuhoc77v0ZG0rVeS53otT9bqL1sbjaGm6s2DyCQ=-}f<gG4qM~q(F6#dK',
                         'merchantAccount' => 'FrontasticGmbHECOM',
+                        'clientKey' => 'client key',
                         'originKeys' => [
                             'http://some.domain' => 'key 1',
                             'https://other.domain' => 'key 2',
