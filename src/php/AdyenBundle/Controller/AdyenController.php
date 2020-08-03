@@ -40,7 +40,7 @@ class AdyenController extends CartController
             throw new BadRequestHttpException('Missing object browserInfo in JSON body');
         }
 
-        return $this->json($adyenService->makePayment(
+        return new JsonResponse($adyenService->makePayment(
             $this->getCart($context, $request),
             $body['paymentMethod'],
             $body['browserInfo'],
@@ -65,7 +65,7 @@ class AdyenController extends CartController
 
         $cart = $this->getCart($context, $request);
 
-        return $this->json($adyenService->submitPaymentDetails(
+        return new JsonResponse($adyenService->submitPaymentDetails(
             $cart,
             $paymentId,
             $body['details'],
