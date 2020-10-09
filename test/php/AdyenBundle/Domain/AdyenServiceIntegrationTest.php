@@ -53,19 +53,19 @@ class AdyenServiceIntegrationTest extends TestCase
 
         $this->assertInstanceOf(AdyenPaymentMethodsResult::class, $paymentMethodsResult);
 
-        $this->assertInternalType('array', $paymentMethodsResult->paymentMethods);
+        $this->assertIsArray($paymentMethodsResult->paymentMethods);
         $this->assertNotEmpty($paymentMethodsResult->paymentMethods);
         foreach ($paymentMethodsResult->paymentMethods as $paymentMethod) {
             $this->assertInstanceOf(AdyenPaymentMethod::class, $paymentMethod);
-            $this->assertInternalType('string', $paymentMethod->type);
-            $this->assertInternalType('string', $paymentMethod->name);
+            $this->assertIsString($paymentMethod->type);
+            $this->assertIsString($paymentMethod->name);
 
             $this->assertNotEmpty($paymentMethod->type);
             $this->assertNotEmpty($paymentMethod->name);
         }
 
-        $this->assertInternalType('array', $paymentMethodsResult->configuration);
-        $this->assertInternalType('array', $paymentMethodsResult->configuration['paymentMethodsResponse']);
+        $this->assertIsArray($paymentMethodsResult->configuration);
+        $this->assertIsArray($paymentMethodsResult->configuration['paymentMethodsResponse']);
         $this->assertSame('de-DE', $paymentMethodsResult->configuration['locale']);
         $this->assertSame('test', $paymentMethodsResult->configuration['environment']);
         $this->assertSame('key 2', $paymentMethodsResult->configuration['originKey']);
