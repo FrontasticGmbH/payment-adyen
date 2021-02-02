@@ -3,7 +3,7 @@
 namespace Frontastic\Payment\AdyenBundle\Controller;
 
 use Frontastic\Catwalk\ApiCoreBundle\Domain\Context;
-use Frontastic\Common\CartApiBundle\Controller\CartController;
+use Frontastic\Catwalk\FrontendBundle\Controller\CartController;
 use Frontastic\Common\CartApiBundle\Domain\CartApi;
 use Frontastic\Common\ProductApiBundle\Domain\ProductApi\Locale;
 use Frontastic\Payment\AdyenBundle\Domain\AdyenPaymentMethodsResult;
