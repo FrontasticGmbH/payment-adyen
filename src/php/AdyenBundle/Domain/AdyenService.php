@@ -80,12 +80,12 @@ class AdyenService
 
     /**
      * @param array<mixed> $paymentMethod
-     * @param array<mixed> $browserInfo
+     * @param array<mixed>|null $browserInfo
      */
     public function makePayment(
         Cart $cart,
         array $paymentMethod,
-        array $browserInfo,
+        ?array $browserInfo,
         Locale $locale,
         string $origin,
         ?string $clientIp
