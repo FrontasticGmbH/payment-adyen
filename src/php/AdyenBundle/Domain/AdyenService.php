@@ -76,6 +76,7 @@ class AdyenService
                 'locale' => $adyenLocale,
                 'environment' => 'test',
                 'clientKey' => $this->clientKey,
+                'hasHolderName' => true,
             ],
         ]);
     }
