@@ -4,8 +4,10 @@ namespace Frontastic\Payment\AdyenBundle\Domain;
 
 use Adyen\Client;
 use Adyen\Service\Checkout;
+use Frontastic\Common\AccountApiBundle\Domain\Address;
 use Frontastic\Common\CartApiBundle\Domain\Cart;
 use Frontastic\Common\CartApiBundle\Domain\CartApi;
+use Frontastic\Common\CartApiBundle\Domain\LineItem;
 use Frontastic\Common\CartApiBundle\Domain\Payment;
 use Frontastic\Common\ProductApiBundle\Domain\ProductApi\Locale;
 use Ramsey\Uuid\Uuid;
@@ -105,6 +107,8 @@ class AdyenService
 
         $checkoutService = $this->buildCheckoutService();
         $paymentParameters = [
+            'countryCode' => $locale->territory,
+            'shopperLocale' => $this->buildAdyenLocale($locale),
             'amount' => $this->buildCartAmount($cart),
             'reference' => $cart->cartId,
             'paymentMethod' => $paymentMethod,
@@ -112,6 +116,7 @@ class AdyenService
             'additionalData' => [
                 'allow3DS2' => true,
             ],
+            'lineItems' => $this->buildAdyenLineItems($cart),
             'channel' => 'Web',
             'origin' => $origin,
             'returnUrl' =>
@@ -123,6 +128,19 @@ class AdyenService
                     ]
                 ),
         ];
+
+        if ($cart->hasUser()) {
+            $paymentParameters['shopperEmail'] = $cart->email;
+        }
+
+        if ($cart->hasBillingAddress() !== null) {
+            $paymentParameters['shopperName'] = implode(
+                ' ',
+                [$cart->billingAddress->firstName, $cart->billingAddress->lastName]
+            );
+            $paymentParameters['billingAddress'] = $this->buildAdyenAddress($cart->billingAddress);
+        }
+
         if ($clientIp !== null) {
             $paymentParameters['shopperIp'] = $clientIp;
         }
@@ -260,5 +278,31 @@ class AdyenService
         $paymentResult = new AdyenPaymentResult($result);
         $paymentResult->paymentId = $paymentId;
         return $paymentResult;
+    }
+
+    private function buildAdyenLineItems(Cart $cart): array
+    {
+        return array_map(
+            function (LineItem $lineItem) {
+                return [
+                    'id' => $lineItem->lineItemId,
+                    'description' => $lineItem->name,
+                    'quantity' => $lineItem->count,
+                    'amountIncludingTax' => $lineItem->totalPrice,
+                ];
+            },
+            $cart->lineItems
+        );
+    }
+
+    private function buildAdyenAddress(Address $address): array
+    {
+        return [
+            'country' => $address->country,
+            'city' => $address->city,
+            'street' => $address->streetName ?? '',
+            'houseNumberOrName' => $address->streetNumber ?? '',
+            'postalCode' => $address->postalCode,
+        ];
     }
 }
