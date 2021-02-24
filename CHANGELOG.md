@@ -1,5 +1,13 @@
 # adyen Changelog
 
+## `1.0.1` (2021-02-24)
+
+* feat: allow changing Adyen environment
+* feat: inlcude field for CC holder name for Adyen
+* feat: include additional data in Adyen payment request
+* fix: make browserInfo optional for Adyen
+* fix: removed fixed terriroty on Adyen integration
+
 ## `1.0.0` (2021-02-10)
 
 * feat: requested minimum version of catwalk library

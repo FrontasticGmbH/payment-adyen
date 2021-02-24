@@ -1,7 +1,7 @@
 {
     "name": "frontastic/payment-adyen",
     "description": "Frontastic Adyen payment integration",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "license": "None",
     "type": "library",
     "repositories": [
