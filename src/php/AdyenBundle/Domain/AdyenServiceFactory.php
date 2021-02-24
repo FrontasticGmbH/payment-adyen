@@ -30,7 +30,7 @@ class AdyenServiceFactory
         $client = new Client();
         $client->setXApiKey(self::getStringOption($adyenConfig, 'apiKey'));
         $client->setMerchantAccount(self::getStringOption($adyenConfig, 'merchantAccount'));
-        $client->setEnvironment(Environment::TEST);
+        $client->setEnvironment(self::getStringOption($adyenConfig, 'environment', Environment::TEST));
 
         return new AdyenService(
             $client,
@@ -41,9 +41,9 @@ class AdyenServiceFactory
         );
     }
 
-    private static function getStringOption(\stdClass $config, string $option): string
+    private static function getStringOption(\stdClass $config, string $option, ?string $default = null): string
     {
-        $value = $config->$option ?? null;
+        $value = $config->$option ?? $default;
         if ($value === null) {
             throw new \RuntimeException('Adyen config option ' . $option . ' is not set');
         }
