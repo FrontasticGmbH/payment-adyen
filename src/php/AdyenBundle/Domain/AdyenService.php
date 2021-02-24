@@ -137,8 +137,10 @@ class AdyenService
         if ($cart->hasBillingAddress() !== null) {
             $paymentParameters['shopperName'] = implode(
                 ' ',
+                // @phpstan-ignore-next-line hasBillingAddress() is false if these values are null
                 [$cart->billingAddress->firstName, $cart->billingAddress->lastName]
             );
+            // @phpstan-ignore-next-line hasBillingAddress() is false if the address is null
             $paymentParameters['billingAddress'] = $this->buildAdyenAddress($cart->billingAddress);
         }
 
@@ -281,6 +283,9 @@ class AdyenService
         return $paymentResult;
     }
 
+    /**
+     * @return array<string, mixed>[]
+     */
     private function buildAdyenLineItems(Cart $cart): array
     {
         return array_map(
@@ -296,6 +301,9 @@ class AdyenService
         );
     }
 
+    /**
+     * @return array<string, string>
+     */
     private function buildAdyenAddress(Address $address): array
     {
         return [
