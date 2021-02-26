@@ -147,7 +147,7 @@ class AdyenService
         }
 
         if ($clientIp !== null) {
-            $paymentParameters['shopperIp'] = $clientIp;
+            $paymentParameters['shopperIP'] = $clientIp;
         }
         $result = $checkoutService->payments($paymentParameters);
         $paymentResult = $this->buildPaymentResult($result, $paymentId);
