@@ -37,8 +37,8 @@ class AdyenServiceFactory
             $this->router,
             $this->cartApi,
             self::getStringOption($adyenConfig, 'clientKey'),
-            self::getStringMapOption($adyenConfig, 'originKeys'),
-            self::getStringMapOption($adyenConfig, 'additionalPaymentConfig')
+            self::getStringMapOption($adyenConfig, 'originKeys', true),
+            self::getStringMapOption($adyenConfig, 'additionalPaymentConfig', false)
         );
     }
 
@@ -61,9 +61,9 @@ class AdyenServiceFactory
     /**
      * @return array<string, string>
      */
-    private static function getStringMapOption(\stdClass $config, string $option): array
+    private static function getStringMapOption(\stdClass $config, string $option, bool $required): array
     {
-        $map = $config->$option ?? null;
+        $map = $config->$option ?? ($required ? null : []);
         if ($map === null) {
             throw new \RuntimeException('Adyen config option ' . $option . ' is not set');
         }
