@@ -30,21 +30,27 @@ class AdyenService
     /** @var array<string, string> */
     private $originKeys;
 
+    /** @var array<string, string> */
+    private $additionalPaymentConfig;
+
     /**
      * @param array<string, string> $originKeys
+     * @param array<string, string> $additionalPaymentConfig
      */
     public function __construct(
         Client $adyenClient,
         UrlGeneratorInterface $router,
         CartApi $cartApi,
         string $clientKey,
-        array $originKeys
+        array $originKeys,
+        array $additionalPaymentConfig = []
     ) {
         $this->adyenClient = $adyenClient;
         $this->router = $router;
         $this->cartApi = $cartApi;
         $this->clientKey = $clientKey;
         $this->originKeys = $originKeys;
+        $this->additionalPaymentConfig = $additionalPaymentConfig;
     }
 
     public function fetchPaymentMethodsForCart(Cart $cart, Locale $locale, string $origin): AdyenPaymentMethodsResult
@@ -71,15 +77,18 @@ class AdyenService
 
         return new AdyenPaymentMethodsResult([
             'paymentMethods' => $paymentMethods,
-            'configuration' => [
-                'paymentMethodsResponse' => $result,
-                'originKey' => $this->getOriginKey($origin),
-                'locale' => $adyenLocale,
-                'environment' => 'test',
-                'clientKey' => $this->clientKey,
-                'hasHolderName' => true,
-                'amount' => $amount,
-            ],
+            'configuration' => array_merge(
+                [
+                    'paymentMethodsResponse' => $result,
+                    'originKey' => $this->getOriginKey($origin),
+                    'locale' => $adyenLocale,
+                    'environment' => 'test',
+                    'clientKey' => $this->clientKey,
+                    'hasHolderName' => true,
+                    'amount' => $amount,
+                ],
+                $this->additionalPaymentConfig
+            ),
         ]);
     }
 
