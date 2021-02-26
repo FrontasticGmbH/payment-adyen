@@ -51,10 +51,11 @@ class AdyenService
     {
         $checkoutService = $this->buildCheckoutService();
         $adyenLocale = $this->buildAdyenLocale($locale);
+        $amount = $this->buildCartAmount($cart);
         $result = $checkoutService->paymentMethods([
             'countryCode' => $locale->territory,
             'shopperLocale' => $adyenLocale,
-            'amount' => $this->buildCartAmount($cart),
+            'amount' => $amount,
             'channel' => 'Web',
         ]);
 
@@ -77,6 +78,7 @@ class AdyenService
                 'environment' => 'test',
                 'clientKey' => $this->clientKey,
                 'hasHolderName' => true,
+                'amount' => $amount,
             ],
         ]);
     }
