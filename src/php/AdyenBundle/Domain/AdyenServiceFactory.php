@@ -26,7 +26,9 @@ class AdyenServiceFactory
     /**
      * @param Project $project
      * @return AdyenService
-     * @throws ConfigurationParameterMissingException "liveUrlPrefix" config parameter is mandatory when Environment is set to "live". If it is missing, this exception will be thrown.
+     * @throws ConfigurationParameterMissingException "liveUrlPrefix" config
+     *   parameter is mandatory when Environment is set to "live". If it is
+     *   missing, this exception will be thrown.
      * @throws \Adyen\AdyenException
      */
     public function factorForProject(Project $project): AdyenService
