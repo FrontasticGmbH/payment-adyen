@@ -45,6 +45,7 @@ class AdyenServiceFactory
             $this->router,
             $this->cartApi,
             self::getStringOption($adyenConfig, 'clientKey'),
+            $environment,
             self::getStringMapOption($adyenConfig, 'originKeys', true),
             self::getStringMapOption($adyenConfig, 'additionalPaymentConfig', false)
         );

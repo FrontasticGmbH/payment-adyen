@@ -27,6 +27,9 @@ class AdyenService
     /** @var string */
     private $clientKey;
 
+    /** @var string */
+    private $environemnt;
+
     /** @var array<string, string> */
     private $originKeys;
 
@@ -42,6 +45,7 @@ class AdyenService
         UrlGeneratorInterface $router,
         CartApi $cartApi,
         string $clientKey,
+        string $environment,
         array $originKeys,
         array $additionalPaymentConfig = []
     ) {
@@ -49,6 +53,7 @@ class AdyenService
         $this->router = $router;
         $this->cartApi = $cartApi;
         $this->clientKey = $clientKey;
+        $this->environemnt = $environment;
         $this->originKeys = $originKeys;
         $this->additionalPaymentConfig = $additionalPaymentConfig;
     }
@@ -82,7 +87,7 @@ class AdyenService
                     'paymentMethodsResponse' => $result,
                     'originKey' => $this->getOriginKey($origin),
                     'locale' => $adyenLocale,
-                    'environment' => 'test',
+                    'environment' => $this->environemnt,
                     'clientKey' => $this->clientKey,
                     'hasHolderName' => true,
                     'amount' => $amount,
