@@ -1,5 +1,9 @@
 # adyen Changelog
 
+## `1.0.4` (2021-03-05)
+
+* fix: remove hardcoded test environment from adyen
+
 ## `1.0.3` (2021-03-05)
 
 * feat: enable adyen payment integration to be useable for live environment
