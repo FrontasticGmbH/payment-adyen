@@ -1,5 +1,13 @@
 # adyen Changelog
 
+## `1.0.2` (2021-03-05)
+
+* feat: enable adyen payment integration to be useable for live environment
+* fix: don’t throw on missing additional config
+* feat: allow additional payment config for adyen
+* feat: update Adyen PHP SDK
+* feat: include amount in payment configuration
+
 ## `1.0.1` (2021-02-24)
 
 * feat: allow changing Adyen environment
