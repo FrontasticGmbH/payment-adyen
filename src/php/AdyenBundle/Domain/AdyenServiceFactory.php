@@ -37,10 +37,10 @@ class AdyenServiceFactory
         $adyenConfig = $project->getConfigurationSection('payment', 'adyen');
 
         $environment = self::getStringOption($adyenConfig, 'environment', Environment::TEST);
-        $liveUrlPrefix = self::getStringOption($adyenConfig, 'liveUrlPrefix', null);
 
-        if ($environment == Environment::LIVE && $liveUrlPrefix === null) {
-            throw new ConfigurationParameterMissingException('liveUrlPrefix');
+        $liveUrlPrefix = null;
+        if ($environment === Environment::LIVE) {
+            $liveUrlPrefix = self::getStringOption($adyenConfig, 'liveUrlPrefix');
         }
 
         $client = new Client();
