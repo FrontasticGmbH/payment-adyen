@@ -6,6 +6,7 @@ use Adyen\Client;
 use Adyen\Environment;
 use Frontastic\Common\CartApiBundle\Domain\CartApi;
 use Frontastic\Common\ReplicatorBundle\Domain\Project;
+use Frontastic\Payment\AdyenBundle\Domain\Exception\ConfigurationParameterMissingException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AdyenServiceFactory
@@ -22,15 +23,28 @@ class AdyenServiceFactory
         $this->cartApi = $cartApi;
     }
 
+    /**
+     * @param Project $project
+     * @return AdyenService
+     * @throws ConfigurationParameterMissingException "liveUrlPrefix" config parameter is mandatory when Environment is set to "live". If it is missing, this exception will be thrown.
+     * @throws \Adyen\AdyenException
+     */
     public function factorForProject(Project $project): AdyenService
     {
         /** @var \stdClass $adyenConfig */
         $adyenConfig = $project->getConfigurationSection('payment', 'adyen');
 
+        $environment = self::getStringOption($adyenConfig, 'environment', Environment::TEST);
+        $liveUrlPrefix = self::getStringOption($adyenConfig, 'liveUrlPrefix', null);
+
+        if ($environment == Environment::LIVE && $liveUrlPrefix === null) {
+            throw new ConfigurationParameterMissingException('liveUrlPrefix');
+        }
+
         $client = new Client();
         $client->setXApiKey(self::getStringOption($adyenConfig, 'apiKey'));
         $client->setMerchantAccount(self::getStringOption($adyenConfig, 'merchantAccount'));
-        $client->setEnvironment(self::getStringOption($adyenConfig, 'environment', Environment::TEST));
+        $client->setEnvironment($environment, $liveUrlPrefix);
 
         return new AdyenService(
             $client,
