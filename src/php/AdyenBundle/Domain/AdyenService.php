@@ -123,16 +123,6 @@ class AdyenService
         $cart = $this->cartApi->commit($locale->toString());
 
         $checkoutService = $this->buildCheckoutService();
-        $paymentReturnRouteParameters = [
-            'cartId' => $cart->cartId,
-            'paymentId' => $paymentId,
-        ];
-        $sessionName = session_name();
-        $sessionId = session_id();
-        if ($sessionName !== null && $sessionId !== null) {
-            $paymentReturnRouteParameters[$sessionName] = $sessionId;
-        }
-
         $paymentParameters = [
             'countryCode' => $locale->territory,
             'shopperLocale' => $this->buildAdyenLocale($locale),
@@ -147,7 +137,14 @@ class AdyenService
             'channel' => 'Web',
             'origin' => $origin,
             'returnUrl' =>
-                $origin . $this->router->generate('Frontastic.Adyen.paymentReturn', $paymentReturnRouteParameters),
+                $origin . $this->router->generate(
+                    'Frontastic.Adyen.paymentReturn',
+                    [
+                        'cartId' => $cart->cartId,
+                        'paymentId' => $paymentId,
+                        session_name() => session_id(),
+                    ]
+                ),
         ];
 
         if ($cart->hasUser()) {
