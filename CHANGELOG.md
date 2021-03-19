@@ -1,5 +1,9 @@
 # adyen Changelog
 
+## `1.0.5` (2021-03-19)
+
+* feat: pass session id as query parameter to adyen redirect URL
+
 ## `1.0.4` (2021-03-05)
 
 * fix: remove hardcoded test environment from adyen
