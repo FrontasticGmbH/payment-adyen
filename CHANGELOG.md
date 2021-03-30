@@ -1,5 +1,10 @@
 # adyen Changelog
 
+## `1.0.6` (2021-03-30)
+
+* fix: Remove phpcpd from all projects
+* fix: remove useless null check
+
 ## `1.0.5` (2021-03-19)
 
 * feat: pass session id as query parameter to adyen redirect URL
