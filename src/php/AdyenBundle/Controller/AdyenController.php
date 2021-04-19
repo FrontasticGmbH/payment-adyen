@@ -15,12 +15,16 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class AdyenController extends CartController
 {
+    private AdyenService $adyenService;
+
+    public function __construct(AdyenService $adyenService)
+    {
+        $this->adyenService = $adyenService;
+    }
+
     public function getPaymentMethodsAction(Context $context, Request $request): AdyenPaymentMethodsResult
     {
-        /** @var AdyenService $adyenService */
-        $adyenService = $this->get(AdyenService::class);
-
-        return $adyenService->fetchPaymentMethodsForCart(
+        return $this->adyenService->fetchPaymentMethodsForCart(
             $this->getCart($context, $request),
             $this->getLocaleForContext($context),
             $this->getOriginForRequest($request)
@@ -29,15 +33,12 @@ class AdyenController extends CartController
 
     public function makePaymentAction(Context $context, Request $request): JsonResponse
     {
-        /** @var AdyenService $adyenService */
-        $adyenService = $this->get(AdyenService::class);
-
         $body = $this->getJsonContent($request);
         if (!is_array($body['paymentMethod'] ?? null)) {
             throw new BadRequestHttpException('Missing object paymentMethod in JSON body');
         }
 
-        return new JsonResponse($adyenService->makePayment(
+        return new JsonResponse($this->adyenService->makePayment(
             $this->getCart($context, $request),
             $body['paymentMethod'],
             $body['browserInfo'] ?? null,
@@ -49,9 +50,6 @@ class AdyenController extends CartController
 
     public function addidionalPaymentDetailsAction(Context $context, Request $request, string $paymentId): JsonResponse
     {
-        /** @var AdyenService $adyenService */
-        $adyenService = $this->get(AdyenService::class);
-
         $body = $this->getJsonContent($request);
         if (!is_array($body['details'] ?? null)) {
             throw new BadRequestHttpException('Missing object details in JSON body');
@@ -62,7 +60,7 @@ class AdyenController extends CartController
 
         $cart = $this->getCart($context, $request);
 
-        return new JsonResponse($adyenService->submitPaymentDetails(
+        return new JsonResponse($this->adyenService->submitPaymentDetails(
             $cart,
             $paymentId,
             $body['details'],
@@ -77,9 +75,6 @@ class AdyenController extends CartController
         string $cartId,
         string $paymentId
     ): RedirectRouteResponse {
-        /** @var AdyenService $adyenService */
-        $adyenService = $this->get(AdyenService::class);
-
         /** @var CartApi $cartApi */
         $cartApi = $this->get('frontastic.catwalk.cart_api');
 
@@ -98,7 +93,7 @@ class AdyenController extends CartController
             $details[$detailKey] = $request->get($detailKey);
         }
 
-        $adyenService->submitPaymentDetails(
+        $this->adyenService->submitPaymentDetails(
             $cart,
             $paymentId,
             $details,
