@@ -1,5 +1,9 @@
 # adyen Changelog
 
+## `1.0.8` (2021-05-05)
+
+chore: increased catwalk library version requested
+
 ## `1.0.7` (2021-05-05)
 
 * chore(FP-91) Revert CartApiController is used by AdyenController too, refactored AdyenController
