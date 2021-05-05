@@ -1,5 +1,9 @@
 # adyen Changelog
 
+## `1.0.7` (2021-05-05)
+
+* chore(FP-91) Revert CartApiController is used by AdyenController too, refactored AdyenController
+
 ## `1.0.6` (2021-03-30)
 
 * fix: Remove phpcpd from all projects
