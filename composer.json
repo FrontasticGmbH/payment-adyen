@@ -26,7 +26,7 @@
 
         "symfony/symfony": "^4.1",
 
-        "frontastic/catwalk": ">=1.7",
+        "frontastic/catwalk": "^1.10.5",
         "frontastic/common": "*",
         "adyen/php-api-library": "^9.0"
     },
