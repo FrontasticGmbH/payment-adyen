@@ -4,10 +4,14 @@ namespace Frontastic\Payment\AdyenBundle\Controller;
 
 use Frontastic\Catwalk\ApiCoreBundle\Domain\Context;
 use Frontastic\Catwalk\FrontendBundle\Controller\CartController;
+use Frontastic\Catwalk\FrontendBundle\Controller\CartFetcher;
+use Frontastic\Catwalk\TrackingBundle\Domain\TrackingService;
 use Frontastic\Common\CartApiBundle\Domain\CartApi;
+use Frontastic\Common\CartApiBundle\Domain\CartApiFactory;
 use Frontastic\Common\ProductApiBundle\Domain\ProductApi\Locale;
 use Frontastic\Payment\AdyenBundle\Domain\AdyenPaymentMethodsResult;
 use Frontastic\Payment\AdyenBundle\Domain\AdyenService;
+use Psr\Log\LoggerInterface;
 use QafooLabs\MVC\RedirectRouteResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,10 +20,34 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 class AdyenController extends CartController
 {
     private AdyenService $adyenService;
+    private $cartFetcher;
+    private TrackingService $trackingService;
+    private CartApi $cartApiService;
+    private LoggerInterface $logger;
+    private CartApiFactory $cartApiFactory;
 
-    public function __construct(AdyenService $adyenService)
-    {
+    public function __construct(
+        AdyenService $adyenService,
+        TrackingService $trackingService,
+        CartApi $cartApiService,
+        CartFetcher $cartFetcher,
+        LoggerInterface $logger,
+        CartApiFactory $cartApiFactory
+    ) {
         $this->adyenService = $adyenService;
+        $this->trackingService = $trackingService;
+        $this->cartApi = $cartApiService;
+        $this->cartFetcher = $cartFetcher;
+        $this->logger = $logger;
+        $this->cartApiFactory = $cartApiFactory;
+
+        parent::__construct(
+            $this->trackingService,
+            $this->cartApi,
+            $this->cartFetcher,
+            $this->logger,
+            $this->cartApiFactory
+        );
     }
 
     public function getPaymentMethodsAction(Context $context, Request $request): AdyenPaymentMethodsResult

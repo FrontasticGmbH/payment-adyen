@@ -17,6 +17,11 @@
         <service id="Frontastic\Payment\AdyenBundle\Controller\AdyenController" >
             <tag name="controller.service_arguments" />
             <argument type="service" id="Frontastic\Payment\AdyenBundle\Domain\AdyenService" />
+            <argument type="service" id="Frontastic\Catwalk\TrackingBundle\Domain\TrackingService" />
+            <argument type="service" id="frontastic.catwalk.cart_api" />
+            <argument type="service" id="Frontastic\Catwalk\FrontendBundle\Controller\CartFetcher" />
+            <argument type="service" id="Psr\Log\LoggerInterface" />
+            <argument type="service" id="Frontastic\Common\CartApiBundle\Domain\CartApiFactory" />
         </service>
     </services>
 </container>
