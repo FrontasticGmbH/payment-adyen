@@ -20,7 +20,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 class AdyenController extends CartController
 {
     private AdyenService $adyenService;
-    private $cartFetcher;
+    private CartFetcher $cartFetcher;
     private TrackingService $trackingService;
     private CartApi $cartApiService;
     private LoggerInterface $logger;
