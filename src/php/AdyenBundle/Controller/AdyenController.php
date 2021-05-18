@@ -20,11 +20,6 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 class AdyenController extends CartController
 {
     private AdyenService $adyenService;
-    private CartFetcher $cartFetcher;
-    private TrackingService $trackingService;
-    private CartApi $cartApiService;
-    private LoggerInterface $logger;
-    private CartApiFactory $cartApiFactory;
 
     public function __construct(
         AdyenService $adyenService,
@@ -34,19 +29,14 @@ class AdyenController extends CartController
         LoggerInterface $logger,
         CartApiFactory $cartApiFactory
     ) {
-        $this->adyenService = $adyenService;
-        $this->trackingService = $trackingService;
-        $this->cartApi = $cartApiService;
-        $this->cartFetcher = $cartFetcher;
-        $this->logger = $logger;
-        $this->cartApiFactory = $cartApiFactory;
+        $this->adyenService =  $adyenService;
 
         parent::__construct(
-            $this->trackingService,
-            $this->cartApi,
-            $this->cartFetcher,
-            $this->logger,
-            $this->cartApiFactory
+            $trackingService,
+            $cartApiService,
+            $cartFetcher,
+            $logger,
+            $cartApiFactory
         );
     }
 
