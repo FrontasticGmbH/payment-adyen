@@ -1,5 +1,9 @@
 # adyen Changelog
 
+## `1.0.9` (2021-05-18)
+
+* fix: Fix the parent construct on AdyenController to CartController
+
 ## `1.0.8` (2021-05-05)
 
 chore: increased catwalk library version requested
