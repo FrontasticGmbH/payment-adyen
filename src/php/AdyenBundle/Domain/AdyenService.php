@@ -329,6 +329,7 @@ class AdyenService
             'street' => $address->streetName ?? '',
             'houseNumberOrName' => $address->streetNumber ?? '',
             'postalCode' => $address->postalCode,
+            'stateOrProvince' => $address->state ?? '',
         ];
     }
 }
