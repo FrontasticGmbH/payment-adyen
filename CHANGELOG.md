@@ -1,5 +1,9 @@
 # adyen Changelog
 
+## `1.0.10` (2021-05-26)
+
+* feat: Pass on state to adyen, if available
+
 ## `1.0.9` (2021-05-18)
 
 * fix: Fix the parent construct on AdyenController to CartController
