@@ -3,7 +3,7 @@ info:
   title: 'Frontastic Adyen Payment Implementation'
   version: 1.0.0
 paths:
-  /paymentsMethod:
+  /api/payment/adyen/paymentsMethod:
     get:
       summary: 'Get available payment methods'
       description: ''
@@ -39,7 +39,7 @@ paths:
                   configuration:
                     type: array
                     items: {  }
-  /payment:
+  /api/payment/adyen/payment:
     post:
       summary: 'Make payment'
       description: ''

@@ -1,6 +1,6 @@
 # 
 
-## `GET` `/paymentsMethod`
+## `GET` `/api/payment/adyen/paymentsMethod`
 
 *Get available payment methods*
 
@@ -22,7 +22,7 @@ Status: 200
 
   * `configuration`: `array`
 
-## `POST` `/payment`
+## `POST` `/api/payment/adyen/payment`
 
 *Make payment*
 

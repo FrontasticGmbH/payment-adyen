@@ -45,7 +45,7 @@ class AdyenController extends CartController
      *
      * @Docs\Request(
      *  "GET",
-     *  "/paymentsMethod"
+     *  "/api/payment/adyen/paymentsMethod"
      * )
      * @Docs\Response(
      *  "200",
@@ -66,7 +66,7 @@ class AdyenController extends CartController
      *
      * @Docs\Request(
      *  "POST",
-     *  "/payment",
+     *  "/api/payment/adyen/payment",
      *  "object{paymentMethod: \Frontastic\Payment\AdyenBundle\Domain\AdyenPaymentMethod, browserInfo: ?object}"
      * )
      * @Docs\Response(
