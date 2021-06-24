@@ -31,7 +31,7 @@
         "adyen/php-api-library": "^9.0"
     },
     "require-dev":  {
-        "frontastic/apidocs": "^1.0.0@alpha",
+        "frontastic/apidocs": "@dev",
         "phpunit/phpunit": "^7",
         "phpmd/phpmd": "@stable",
         "pdepend/pdepend": "@stable",

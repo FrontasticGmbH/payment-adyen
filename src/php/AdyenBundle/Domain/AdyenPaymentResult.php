@@ -4,24 +4,27 @@ namespace Frontastic\Payment\AdyenBundle\Domain;
 
 use Kore\DataObject\DataObject;
 
+/**
+ * @type
+ */
 class AdyenPaymentResult extends DataObject
 {
     /** @var string */
     public $paymentId;
 
-    /** @var string|null */
+    /** @var ?string */
     public $resultCode;
 
-    /** @var string|null */
+    /** @var ?string */
     public $merchantReference;
 
-    /** @var string|null */
+    /** @var ?string */
     public $pspReference;
 
-    /** @var string|null */
+    /** @var ?string */
     public $refusalReason;
 
-    /** @var AdyenAction|null */
+    /** @var ?AdyenAction */
     public $action;
 
     /** @var AdyenPaymentDetail[] */

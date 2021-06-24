@@ -1,0 +1,118 @@
+openapi: 3.0.0
+info:
+  title: 'Frontastic Adyen Payment Implementation'
+  version: 1.0.0
+paths:
+  /paymentsMethod:
+    get:
+      summary: 'Get available payment methods'
+      description: ''
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: 'null'
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _type:
+                    type: string
+                    pattern: ^\Frontastic\Payment\AdyenBundle\Domain\AdyenPaymentMethodsResult$
+                  paymentMethods:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _type:
+                          type: string
+                          pattern: ^\Frontastic\Payment\AdyenBundle\Domain\AdyenPaymentMethod$
+                        type:
+                          type: string
+                        name:
+                          type: string
+                  configuration:
+                    type: array
+                    items: {  }
+  /payment:
+    post:
+      summary: 'Make payment'
+      description: ''
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                _type:
+                  type: string
+                  pattern: ^object$
+                paymentMethod:
+                  type: object
+                  properties:
+                    _type:
+                      type: string
+                      pattern: ^\Frontastic\Payment\AdyenBundle\Domain\AdyenPaymentMethod$
+                    type:
+                      type: string
+                    name:
+                      type: string
+                browserInfo:
+                  type: object
+                  nullable: true
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _type:
+                    type: string
+                    pattern: ^\Frontastic\Payment\AdyenBundle\Domain\AdyenPaymentResult$
+                  paymentId:
+                    type: string
+                  resultCode:
+                    type: string
+                    nullable: true
+                  merchantReference:
+                    type: string
+                    nullable: true
+                  pspReference:
+                    type: string
+                    nullable: true
+                  refusalReason:
+                    type: string
+                    nullable: true
+                  action:
+                    type: object
+                    properties:
+                      _type:
+                        type: string
+                        pattern: ^\Frontastic\Payment\AdyenBundle\Domain\AdyenAction$
+                      type:
+                        type: string
+                      paymentData:
+                        oneOf:
+                          -
+                            type: string
+                          -
+                            type: 'null'
+                    nullable: true
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _type:
+                          type: string
+                          pattern: ^\Frontastic\Payment\AdyenBundle\Domain\AdyenPaymentDetail$
+                        key:
+                          type: string

@@ -4,6 +4,9 @@ namespace Frontastic\Payment\AdyenBundle\Domain;
 
 use Kore\DataObject\DataObject;
 
+/***
+ * @type
+ */
 class AdyenPaymentMethod extends DataObject
 {
     /** @var string */

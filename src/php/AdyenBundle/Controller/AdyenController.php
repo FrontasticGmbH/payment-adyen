@@ -40,6 +40,18 @@ class AdyenController extends CartController
         );
     }
 
+    /**
+     * Get available payment methods
+     *
+     * @Docs\Request(
+     *  "GET",
+     *  "/paymentsMethod"
+     * )
+     * @Docs\Response(
+     *  "200",
+     *  "AdyenPaymentMethodsResult"
+     * )
+     */
     public function getPaymentMethodsAction(Context $context, Request $request): AdyenPaymentMethodsResult
     {
         return $this->adyenService->fetchPaymentMethodsForCart(
@@ -49,6 +61,19 @@ class AdyenController extends CartController
         );
     }
 
+    /**
+     * Make payment
+     *
+     * @Docs\Request(
+     *  "POST",
+     *  "/payment",
+     *  "object{paymentMethod: \Frontastic\Payment\AdyenBundle\Domain\AdyenPaymentMethod, browserInfo: ?object}"
+     * )
+     * @Docs\Response(
+     *  "200",
+     *  "\Frontastic\Payment\AdyenBundle\Domain\AdyenPaymentResult"
+     * )
+     */
     public function makePaymentAction(Context $context, Request $request): JsonResponse
     {
         $body = $this->getJsonContent($request);

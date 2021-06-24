@@ -1,0 +1,17 @@
+---
+name: "Frontastic Adyen Payment Implementation"
+source: src/php/AdyenBundle
+target: docs
+autoloader: vendor/autoload.php
+nameSpace: "\\Frontastic\\Payment\\AdyenBundle\\Domain"
+typeScript:
+  target: src/js/types/
+  nameSpace:
+    search: '(^(?:([A-Za-z]+?)(?:Api)?Bundle\\)?(?:Domain\\)?)'
+    replace: '\1\\'
+  indent: 4
+files:
+ - Domain/*.php
+ - Domain/*/*.php
+http:
+ - Controller/AdyenController.php
