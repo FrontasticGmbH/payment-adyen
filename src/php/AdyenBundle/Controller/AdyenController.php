@@ -17,6 +17,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
+/**
+ * @IgnoreAnnotation("Docs\Request")
+ * @IgnoreAnnotation("Docs\Response")
+ */
 class AdyenController extends CartController
 {
     private AdyenService $adyenService;
