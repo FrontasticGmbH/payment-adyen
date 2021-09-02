@@ -158,6 +158,7 @@ class AdyenController extends CartController
 
     private function getOriginForRequest(Request $request): string
     {
+        //@phpstan-ignore-next-line
         return $request->query->get('origin', $request->getSchemeAndHttpHost());
     }
 
