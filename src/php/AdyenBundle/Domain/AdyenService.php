@@ -107,7 +107,8 @@ class AdyenService
         ?array $browserInfo,
         Locale $locale,
         string $origin,
-        ?string $clientIp
+        ?string $clientIp,
+        ?string $shopperReference
     ): AdyenPaymentResult {
         $paymentId = Uuid::uuid4()->toString();
 
@@ -151,19 +152,30 @@ class AdyenService
             $paymentParameters['shopperEmail'] = $cart->email;
         }
 
-        if ($cart->hasBillingAddress() !== null) {
-            $paymentParameters['shopperName'] = implode(
-                ' ',
-                // @phpstan-ignore-next-line hasBillingAddress() is false if these values are null
-                [$cart->billingAddress->firstName, $cart->billingAddress->lastName]
-            );
+        if ($cart->hasBillingAddress()) {
+            $paymentParameters['shopperName'] = [
+                // @phpstan-ignore-next-line hasBillingAddress() is false if the first name null
+                'firstName' => $cart->billingAddress->firstName,
+                // @phpstan-ignore-next-line hasBillingAddress() is false if the last name null
+                'lastName' => $cart->billingAddress->lastName,
+            ];
             // @phpstan-ignore-next-line hasBillingAddress() is false if the address is null
             $paymentParameters['billingAddress'] = $this->buildAdyenAddress($cart->billingAddress);
+        }
+
+        if ($cart->hasShippingAddress()) {
+            // @phpstan-ignore-next-line hasShippingAddress() is false if the address is null
+            $paymentParameters['deliveryAddress'] = $this->buildAdyenAddress($cart->shippingAddress);
         }
 
         if ($clientIp !== null) {
             $paymentParameters['shopperIP'] = $clientIp;
         }
+
+        if ($shopperReference !== null) {
+            $paymentParameters['shopperReference'] = $shopperReference;
+        }
+
         $result = $checkoutService->payments($paymentParameters);
         $paymentResult = $this->buildPaymentResult($result, $paymentId);
         $this->updatePaymentWithResult($paymentResult, $cart, $paymentId, $locale);

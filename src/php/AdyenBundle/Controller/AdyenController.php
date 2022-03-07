@@ -71,7 +71,7 @@ class AdyenController extends CartController
      * @Docs\Request(
      *  "POST",
      *  "/api/payment/adyen/payment",
-     *  "object{paymentMethod: \Frontastic\Payment\AdyenBundle\Domain\AdyenPaymentMethod, browserInfo: ?object}"
+     *  "object{paymentMethod: \Frontastic\Payment\AdyenBundle\Domain\AdyenPaymentMethod, browserInfo: ?object, shopperReference: ?string}"
      * )
      * @Docs\Response(
      *  "200",
@@ -91,7 +91,8 @@ class AdyenController extends CartController
             $body['browserInfo'] ?? null,
             $this->getLocaleForContext($context),
             $this->getOriginForRequest($request),
-            $request->getClientIp()
+            $request->getClientIp(),
+            $body['shopperReference'] ?? null
         ));
     }
 
