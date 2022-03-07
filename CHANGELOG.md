@@ -1,5 +1,9 @@
 # adyen Changelog
 
+## `1.0.12` (2022-03-07)
+
+* fix(FP-1582): include missing fields for Adyen afterpay
+
 ## `1.0.11` (2021-07-07)
 
 * fix: Tell symfony to ignore our swagger annotations
