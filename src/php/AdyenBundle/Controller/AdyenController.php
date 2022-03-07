@@ -72,7 +72,11 @@ class AdyenController extends CartController
      * @Docs\Request(
      *  "POST",
      *  "/api/payment/adyen/payment",
-     *  "object{paymentMethod: \Frontastic\Payment\AdyenBundle\Domain\AdyenPaymentMethod, browserInfo: ?object, shopperReference: ?string}"
+     *  "object{
+     *    paymentMethod: \Frontastic\Payment\AdyenBundle\Domain\AdyenPaymentMethod,
+     *    browserInfo: ?object,
+     *    shopperReference: ?string
+     *  }"
      * )
      * @Docs\Response(
      *  "200",
