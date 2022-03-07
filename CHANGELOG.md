@@ -1,5 +1,9 @@
 # adyen Changelog
 
+## `1.1.0` (2022-03-07)
+
+* feat: add paymentMethod to Adyen payments
+
 ## `1.0.12` (2022-03-07)
 
 * fix(FP-1582): include missing fields for Adyen afterpay
