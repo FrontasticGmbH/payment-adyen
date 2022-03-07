@@ -118,6 +118,7 @@ class AdyenService
             'amount' => $cart->sum,
             'currency' => $cart->currency,
             'paymentStatus' => Payment::PAYMENT_STATUS_INIT,
+            'paymentMethod' => $paymentMethod['type'] ?? null
         ]);
         $this->cartApi->startTransaction($cart);
         $this->cartApi->addPayment($cart, $payment, null, $locale->toString());
