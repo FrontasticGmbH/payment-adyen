@@ -38,6 +38,8 @@ Status: 200
 
   * `browserInfo` as *optional* `object`
 
+  * `shopperReference` as *optional* `string`
+
 ### Responses
 
 Status: 200

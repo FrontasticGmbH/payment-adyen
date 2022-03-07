@@ -66,6 +66,9 @@ paths:
                 browserInfo:
                   type: object
                   nullable: true
+                shopperReference:
+                  type: string
+                  nullable: true
       responses:
         200:
           description: ''

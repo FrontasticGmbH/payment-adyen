@@ -62,7 +62,8 @@ public function makePayment(
     ?array $browserInfo,
     \Frontastic\Common\ProductApiBundle\Domain\ProductApi\Locale $locale,
     string $origin,
-    ?string $clientIp
+    ?string $clientIp,
+    ?string $shopperReference
 ): AdyenPaymentResult
 ```
 
@@ -74,6 +75,7 @@ Argument|Type|Default|Description
 `$locale`|`\Frontastic\Common\ProductApiBundle\Domain\ProductApi\Locale`||
 `$origin`|`string`||
 `$clientIp`|`?string`||
+`$shopperReference`|`?string`||
 
 Return Value: [`AdyenPaymentResult`](AdyenPaymentResult.md)
 
