@@ -2,6 +2,7 @@
 
 namespace Frontastic\Payment\AdyenBundle\Controller;
 
+use Doctrine\Common\Annotations\Annotation\IgnoreAnnotation;
 use Frontastic\Catwalk\ApiCoreBundle\Domain\Context;
 use Frontastic\Catwalk\FrontendBundle\Controller\CartController;
 use Frontastic\Catwalk\FrontendBundle\Controller\CartFetcher;
