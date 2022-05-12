@@ -43,11 +43,11 @@ chore: increased catwalk library version requested
 
 ## Version1.0.3  (2021-03-05)
 
-* feat: enable adyen payment integration to be useable for live environment
+* feat: enable adyen payment integration to be usable for live environment
 
 ## Version1.0.2  (2021-03-05)
 
-* feat: enable adyen payment integration to be useable for live environment
+* feat: enable adyen payment integration to be usable for live environment
 * fix: don’t throw on missing additional config
 * feat: allow additional payment config for adyen
 * feat: update Adyen PHP SDK
@@ -56,10 +56,10 @@ chore: increased catwalk library version requested
 ## Version1.0.1  (2021-02-24)
 
 * feat: allow changing Adyen environment
-* feat: inlcude field for CC holder name for Adyen
+* feat: include field for CC holder name for Adyen
 * feat: include additional data in Adyen payment request
 * fix: make browserInfo optional for Adyen
-* fix: removed fixed terriroty on Adyen integration
+* fix: removed fixed territory on Adyen integration
 
 ## Version1.0.0  (2021-02-10)
 
