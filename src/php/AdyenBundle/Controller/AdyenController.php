@@ -12,8 +12,8 @@ use Frontastic\Common\CartApiBundle\Domain\CartApiFactory;
 use Frontastic\Common\ProductApiBundle\Domain\ProductApi\Locale;
 use Frontastic\Payment\AdyenBundle\Domain\AdyenPaymentMethodsResult;
 use Frontastic\Payment\AdyenBundle\Domain\AdyenService;
+use Gyro\MVC\RedirectRoute;
 use Psr\Log\LoggerInterface;
-use QafooLabs\MVC\RedirectRouteResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -127,7 +127,7 @@ class AdyenController extends CartController
         Request $request,
         string $cartId,
         string $paymentId
-    ): RedirectRouteResponse {
+    ): RedirectRoute {
         /** @var CartApi $cartApi */
         $cartApi = $this->get('frontastic.catwalk.cart_api');
 
@@ -154,7 +154,7 @@ class AdyenController extends CartController
             $this->getLocaleForContext($context)
         );
 
-        return new RedirectRouteResponse(
+        return new RedirectRoute(
             'Frontastic.Frontend.Master.Checkout.checkout',
             [
                 'adyenPaymentId' => $paymentId,
