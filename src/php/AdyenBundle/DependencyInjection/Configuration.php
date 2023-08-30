@@ -9,8 +9,6 @@ class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $treeBuilder->root('frontastic_payment_adyen');
-        return $treeBuilder;
+        return new TreeBuilder('frontastic_payment_adyen');
     }
 }
