@@ -12,10 +12,6 @@
         {
             "type": "path",
             "url": "../../../*"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/mantiz/mvc-bundle.git"
         }
     ],
     "config": {
@@ -35,8 +31,7 @@
         "frontastic/common": "*",
         "adyen/php-api-library": "^9.0",
 
-        "frontastic/rulerz-bundle": "^0.16",
-        "gyro/mvc-bundle": "dev-php74-compatibility as 1.0.0"
+        "frontastic/rulerz-bundle": "^0.16"
     },
     "require-dev":  {
         "frontastic/apidocs": "@dev",
