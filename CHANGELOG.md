@@ -1,4 +1,10 @@
-We add any updates to this list as soon as any changes are released.
+
+## Version 1.2.0 (2023-10-11)
+
+** New Features and Improvements **
+
+- Add compatibiltiy with Symfony 5.4.
+
 
 ## Version 1.1.0  (2022-03-07)
 
